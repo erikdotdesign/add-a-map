@@ -35,17 +35,32 @@ const App = () => {
   const [mapType, setMapType] = useState<string>("roadmap");
   const [mapStyle, setMapStyle] = useState<string>("standard");
 
-  // 🗺 Auto-detect city by IP on first load
+  // load cached values or auto-detect city by IP on first load
   useEffect(() => {
-    (async () => {
-      try {
-        const res = await fetch("https://ipapi.co/json");
-        const data = await res.json();
-        setLocation(data.postal);
-      } catch (err) {
-        console.error("IP lookup failed", err);
+    parent.postMessage({ pluginMessage: { type: "load-storage", key: "cache" } }, "*");
+
+    window.onmessage = (event) => {
+      const msg = event.data.pluginMessage;
+      if (msg.type === "storage-loaded") {
+        if (msg.key === "cache" && msg.value) {
+          setLocation(msg.value.location);
+          setZoom(msg.value.zoom);
+          setMapLabels(msg.value.mapLabels);
+          setMapType(msg.value.mapType);
+          setMapStyle(msg.value.mapStyle);
+        } else {
+          (async () => {
+            try {
+              const res = await fetch("https://ipapi.co/json");
+              const data = await res.json();
+              setLocation(data.postal);
+            } catch (err) {
+              console.error("IP lookup failed", err);
+            }
+          })();
+        }
       }
-    })();
+    };
   }, []);
 
   /** Build URL & set map */
@@ -87,10 +102,19 @@ const App = () => {
     []
   );
 
-  // Trigger on dependency changes
+  // Trigger on dependency changes & update cache
   useEffect(() => {
     setLoading(true);
     debouncedFetch(location, zoom, mapType, mapStyle, mapLabels);
+    parent.postMessage({
+      pluginMessage: { type: "save-storage", key: "cache", value: {
+        location,
+        zoom,
+        mapType,
+        mapStyle,
+        mapLabels
+      }},
+    }, "*");
   }, [location, zoom, mapType, mapStyle, mapLabels, debouncedFetch]);
 
   const handleAdd = () => {

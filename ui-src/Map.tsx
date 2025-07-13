@@ -28,9 +28,9 @@ const Map = ({
 
   const mapStyles = {
     standard: ["#C3F1D5", "#9BB0CC"],
+    night: ["#263C3F", "#D09262"],
     light: ["#F5F5F5", "#DADADA"],
     dark: ["#000000", "#777777"],
-    night: ["#263C3F", "#D09262"],
     retro: ["#ECE3CD", "#E58A58"],
     aubergine: ["#0E1626", "#3E8CA0"]
   }

@@ -1,6 +1,13 @@
 figma.showUI(__html__, { width: 350, height: 532 });
 
 figma.ui.onmessage = async (msg) => {
+  if (msg.type === 'save-storage') {
+    await figma.clientStorage.setAsync(msg.key, msg.value);
+  }
+  if (msg.type === 'load-storage') {
+    const value = await figma.clientStorage.getAsync(msg.key);
+    figma.ui.postMessage({ type: 'storage-loaded', key: msg.key, value });
+  }
   if (msg.type === "add-map") {
     const { mapUrl, width: fallbackWidth, height: fallbackHeight } = msg;
 
