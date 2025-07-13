@@ -1,0 +1,139 @@
+.c-map {
+  position: relative;
+  width: 100%;
+  height: 300px;
+}
+
+.c-map__img {
+  position: absolute;
+  display: block;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-size: cover;
+  background-color: var(--color-tertiary);
+}
+
+.c-map__control-overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.c-map__controls {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+}
+
+.c-map__control-group {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+}
+
+.c-map__control {
+  display: flex;
+  position: relative;
+  flex-direction: center;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin-bottom: 12px;
+  background: #fff;
+  box-shadow: 0 0 0 1px var(--color-secondary);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+
+  &:hover {
+    box-shadow: 0 0 0 1px var(--color-primary);
+  }
+}
+
+.c-map__control--active {
+  background: var(--color-primary);
+
+  svg {
+    fill: #fff;
+  }
+}
+
+.c-map__control-column {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: var(--border-radius);
+  box-shadow: 0 0 0 1px var(--color-secondary);
+
+  .c-map__control {
+    margin: 0;
+    box-shadow: none;
+
+    &:hover {
+      z-index: 2;
+      box-shadow: 0 0 0 1px var(--color-primary);
+    }
+  }
+}
+
+.c-map__style {
+  width: 20px;
+  height: 20px;
+  transform: rotate(45deg);
+  border-radius: 100%;
+}
+
+.c-map__unknown {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  svg {
+    width: 48px;
+    height: 48px;
+    fill: var(--color-secondary);
+  }
+}
+
+.c-map__loader {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+
+  .loader {
+    width: 48px;
+    height: 48px;
+    border: 5px solid #FFF;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: loadingAnimation 1s linear infinite;
+  }
+}
+
+@keyframes loadingAnimation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

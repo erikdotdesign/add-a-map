@@ -1,28 +1,33 @@
-figma.showUI(__html__, { width: 350, height: 500 });
+figma.showUI(__html__, { width: 350, height: 532 });
 
 figma.ui.onmessage = async (msg) => {
   if (msg.type === "add-map") {
-    const { mapUrl, width, height } = msg;
+    const { mapUrl, width: fallbackWidth, height: fallbackHeight } = msg;
 
-    // Get the current selection or fallback to center
     const selection = figma.currentPage.selection;
-    let x = figma.viewport.center.x - width / 2;
-    let y = figma.viewport.center.y - height / 2;
+
+    let x: number, y: number, width: number, height: number;
 
     if (selection.length > 0) {
-      const node = selection[0];
-      x = node.x;
-      y = node.y;
+      const bounds = selection[0];
+      x = bounds.x;
+      y = bounds.y;
+      width = bounds.width;
+      height = bounds.height;
+    } else {
+      // Fallback to center of viewport
+      width = fallbackWidth;
+      height = fallbackHeight;
+      x = figma.viewport.center.x - width / 2;
+      y = figma.viewport.center.y - height / 2;
     }
 
-    // Create rectangle
     const rect = figma.createRectangle();
     rect.resize(width, height);
     rect.x = x;
     rect.y = y;
-    rect.name = `Map View`;
+    rect.name = `aam-map`;
 
-    // Fetch map image as bytes
     const imageBytes = await fetch(mapUrl)
       .then(res => res.arrayBuffer())
       .catch(err => {
@@ -33,19 +38,13 @@ figma.ui.onmessage = async (msg) => {
     if (!imageBytes) return;
 
     const image = figma.createImage(new Uint8Array(imageBytes));
+    rect.fills = [{
+      type: "IMAGE",
+      scaleMode: "FILL",
+      imageHash: image.hash,
+    }];
 
-    // Set image as fill
-    rect.fills = [
-      {
-        type: "IMAGE",
-        scaleMode: "FILL",
-        imageHash: image.hash,
-      },
-    ];
-
-    // Add to canvas
     figma.currentPage.appendChild(rect);
     figma.currentPage.selection = [rect];
-    figma.viewport.scrollAndZoomIntoView([rect]);
   }
 };
