@@ -16,6 +16,7 @@ Choose between Roadmap and Satellite views.
 - Dark
 - Retro
 - Aubergine
+
 _Each style is available with or without labels for visual flexibility._
 
 ### Zoom control
